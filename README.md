@@ -1,1 +1,20 @@
-# data_project
+def make_point(row):
+return shapely.geometry.Point([row.longitude,row.latitude])
+fig,ax = plt.subplots(figsize=(13,7))
+airbnb_sg["geometry"] = airbnb_sg.apply(make_point, axis=1)
+geopandas_airbnb_sg = gpd.GeoDataFrame(airbnb_sg)
+singapore_map = gpd.read_file("Region_Census2010.shp")
+singapore_map = singapore_map.to_crs("epsg:4326")
+singapore_map.plot(ax=ax)
+geopandas_airbnb_sg.plot(ax=ax)
+
+fig,ax = plt.subplots(figsize=(13,7))
+geo_airbnb_sg=gpd.GeoDataFrame(airbnb_sg,crs={"init":"epsg:3035"},geometry=[Point(xy) for xy in zip(airbnb_sg["longitude"],airbnb_sg["latitude"])])
+geo_airbnb_sg.plot(legend=True,alpha=0.3,markersize=5,ax=ax)
+singapore_map = gpd.read_file("Region_Census2010.shp")
+singapore_map = singapore_map.to_crs("epsg:4326")
+singapore_map.plot(ax=ax)
+singapore_map.plot(facecolor='Grey', edgecolor='k',alpha=1,ax=ax,cmap="plasma")
+plt.show()
+
+sns.relplot(data=airbnb_sg,x="longitude",y="latitude",kind="scatter",hue="neighbourhood",ax=ax)
